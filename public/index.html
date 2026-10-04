@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Management System</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-right: 8px;
+        }
+
+        .add-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .clear-btn {
+            background: #e2e8f0;
+            color: #111827;
+        }
+
+        .refresh-btn {
+            background: #16a34a;
+            color: white;
+            float: right;
+        }
+
+        .edit-btn {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card h3 {
+            margin-top: 0;
+        }
+
+        .total-number {
+            font-size: 40px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .message {
+            display: none;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .top-student {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        @media (max-width: 700px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th,
+            td {
+                padding: 8px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>🎓 Student Management System</h1>
+
+        <p>
+            Student CRUD Application using Node.js,
+            Express and MongoDB
+        </p>
+
+    </div>
+
+
+    <!-- MESSAGE -->
+
+    <div id="message"
+         class="message">
+    </div>
+
+
+    <!-- ADD STUDENT -->
+
+    <div class="card">
+
+        <h2>Add Student</h2>
+
+
+        <form id="studentForm">
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Enter student name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="age">
+                        Age
+                    </label>
+
+                    <input
+                        type="number"
+                        id="age"
+                        min="1"
+                        placeholder="Enter age"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="course">
+                        Course
+                    </label>
+
+                    <input
+                        type="text"
+                        id="course"
+                        placeholder="Enter course"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="marks">
+                        Marks
+                    </label>
+
+                    <input
+                        type="number"
+                        id="marks"
+                        min="0"
+                        max="100"
+                        placeholder="Enter marks"
+                        required
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    type="submit"
+                    class="add-btn">
+
+                    Add Student
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="clear-btn"
+                    id="clearBtn">
+
+                    Clear
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="stats">
+
+
+        <div class="stat-card">
+
+            <h3>Total Students</h3>
+
+            <div
+                id="totalStudents"
+                class="total-number">
+
+                0
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>🏆 Top Performing Students</h3>
+
+            <div id="summaryContent">
+
+                Loading...
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- STUDENT RECORDS -->
+
+    <div class="card">
+
+        <h2>Student Records</h2>
+
+
+        <button
+            type="button"
+            class="refresh-btn"
+            id="refreshBtn">
+
+            🔄 Refresh
+
+        </button>
+
+
+        <div style="clear: both;"></div>
+
+
+        <div style="overflow-x:auto;">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Name</th>
+
+                        <th>Email</th>
+
+                        <th>Age</th>
+
+                        <th>Course</th>
+
+                        <th>Marks</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="studentTableBody">
+
+                    <tr>
+
+                        <td colspan="6"
+                            class="loading">
+
+                            Loading students...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script src="/script.js"></script>
+
+</body>
+
+</html>
